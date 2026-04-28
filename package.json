@@ -1,6 +1,6 @@
 {
   "name": "pretty-log-tagged",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Make console logs readable with clean, structured, tag-based output.",
   "main": "dist/index.js",
   "browser": "dist/index.js",
