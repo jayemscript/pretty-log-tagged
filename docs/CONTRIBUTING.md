@@ -5,8 +5,8 @@ Contributions are welcome. Please read this guide before submitting a pull reque
 ## Getting Started
 
 ```bash
-git clone https://github.com/jayemscript/pretty-log.git
-cd pretty-log
+git clone https://github.com/jayemscript/pretty-log-tagged.git
+cd pretty-log-tagged
 npm install
 ```
 

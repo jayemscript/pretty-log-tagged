@@ -1,17 +1,17 @@
-# pretty-log
+# pretty-log-tagged
 
 Make console logs readable with clean, structured, tag-based output.
 
 ## Installation
 
 ```bash
-npm install pretty-log
+npm install pretty-log-tagged
 ```
 
 ## Usage
 
 ```ts
-import { clog } from 'pretty-log';
+import { clog } from 'pretty-log-tagged';
 
 clog.user({ id: 1, name: 'Jay' });
 clog.error('Something went wrong');
@@ -48,7 +48,7 @@ The dot notation is the tag. Any property you access becomes the label of that l
 ## Custom Logger
 
 ```ts
-import { createLogger } from 'pretty-log';
+import { createLogger } from 'pretty-log-tagged';
 
 const log = createLogger({
   timestamp: true,   // show ISO timestamp, default: true

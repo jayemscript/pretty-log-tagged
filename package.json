@@ -1,5 +1,5 @@
 {
-  "name": "pretty-log",
+  "name": "pretty-log-tagged",
   "version": "1.0.0",
   "description": "Make console logs readable with clean, structured, tag-based output.",
   "main": "dist/index.js",

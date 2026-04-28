@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Only the latest version of pretty-log receives security updates.
+Only the latest version of pretty-log-tagged receives security updates.
 
 | Version | Supported |
 |---------|-----------|
@@ -19,4 +19,4 @@ You can expect an acknowledgment within 48 hours and a resolution or status upda
 
 ## Scope
 
-pretty-log is a logging utility with no network access, no file system writes, and no external runtime dependencies. The attack surface is limited to console output formatting. That said, any confirmed vulnerability will be taken seriously and patched promptly.
+pretty-log-tagged is a logging utility with no network access, no file system writes, and no external runtime dependencies. The attack surface is limited to console output formatting. That said, any confirmed vulnerability will be taken seriously and patched promptly.
