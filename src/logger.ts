@@ -1,6 +1,6 @@
-import { DEFAULT_TAGS, type TagConfig, type BuiltinTag } from "./lib/tags";
+import { DEFAULT_TAGS, TagConfig, BuiltinTag } from "./lib/tags";
 import { buildPrefix, formatData } from "./utils/formatter";
-import type { FgColor, BgColor } from "./utils/colors";
+import { FgColor, BgColor } from "./utils/colors";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,19 +49,66 @@ export interface LoggerOptions {
   tags?: Record<string, TagConfig>;
 }
 
+// ─── Environment ──────────────────────────────────────────────────────────────
+
+const isBrowser = typeof window !== "undefined";
+
+// ─── Browser dispatch ─────────────────────────────────────────────────────────
+
+/**
+ * In browser environments, ANSI codes don't render.
+ * Use CSS-styled console groups instead.
+ */
+function dispatchBrowser(
+  tag: string,
+  args: unknown[],
+  level: TagConfig["level"],
+  timestamp: boolean,
+): void {
+  const time = timestamp ? `${new Date().toISOString()} ` : "";
+  const label = `${time}[${tag.toUpperCase()}]`;
+
+  const styles: Record<string, string> = {
+    error: "color:#ff4d4f;font-weight:bold",
+    warn: "color:#faad14;font-weight:bold",
+    info: "color:#1890ff;font-weight:bold",
+    debug: "color:#722ed1;font-weight:bold",
+    log: "color:#13c2c2;font-weight:bold",
+  };
+
+  const style = styles[level] ?? styles.log;
+
+  switch (level) {
+    case "info":
+      console.info(`%c${label}`, style, ...args);
+      break;
+    case "warn":
+      console.warn(`%c${label}`, style, ...args);
+      break;
+    case "error":
+      console.error(`%c${label}`, style, ...args);
+      break;
+    case "debug":
+      console.debug(`%c${label}`, style, ...args);
+      break;
+    default:
+      console.log(`%c${label}`, style, ...args);
+      break;
+  }
+}
+
 // ─── Factory ──────────────────────────────────────────────────────────────────
 
 /**
  * Creates a pretty-log instance with optional configuration.
  *
- * All tag methods are auto-generated via a Proxy, so any dot-access
- * becomes a scoped logger: `logger.user(data)`, `logger.payment(data)`, etc.
+ * Works in both Node.js (ANSI colors) and browser (CSS-styled console).
  *
  * @example
  * const clog = createLogger();
- * clog.user({ id: 1 });          // [timestamp]  USER  { id: 1 }
- * clog.error('Something broke'); // [timestamp]  ERROR  Something broke
- * clog.myTag('custom stuff');    // [timestamp]  MYTAG  custom stuff
+ * clog.user({ id: 1 });
+ * clog.error('Something broke');
+ * clog.myTag('custom stuff');
  */
 export function createLogger(options: LoggerOptions = {}): PrettyLogger {
   const { timestamp = true, silent = false, tags: customTags = {} } = options;
@@ -71,9 +118,6 @@ export function createLogger(options: LoggerOptions = {}): PrettyLogger {
     ...customTags,
   };
 
-  /**
-   * Core log dispatch — called by every tag method.
-   */
   function dispatch(tag: string, args: unknown[]): void {
     if (silent) return;
 
@@ -83,6 +127,13 @@ export function createLogger(options: LoggerOptions = {}): PrettyLogger {
       level: "log",
     };
 
+    // Browser — use CSS-styled console
+    if (isBrowser) {
+      dispatchBrowser(tag, args, config.level, timestamp);
+      return;
+    }
+
+    // Node.js — use ANSI colors
     const prefix = timestamp
       ? buildPrefix(tag, config.fg, config.bg)
       : buildPrefix(tag, config.fg, config.bg).replace(/^\S+\s/, "");
@@ -90,7 +141,6 @@ export function createLogger(options: LoggerOptions = {}): PrettyLogger {
     const formatted = args.map((a) => formatData(a)).join(" ");
     const line = `${prefix}  ${formatted}`;
 
-    // Route to the right console method
     switch (config.level) {
       case "info":
         console.info(line);
@@ -110,10 +160,6 @@ export function createLogger(options: LoggerOptions = {}): PrettyLogger {
     }
   }
 
-  /**
-   * Proxy intercepts any property access and returns a log function
-   * bound to that property name as the tag.
-   */
   return new Proxy({} as PrettyLogger, {
     get(_target, prop: string) {
       return (...args: unknown[]) => dispatch(prop, args);
@@ -127,7 +173,7 @@ export function createLogger(options: LoggerOptions = {}): PrettyLogger {
  * Ready-to-use logger instance with default settings.
  *
  * @example
- * import { clog } from 'pretty-log';
+ * import { clog } from 'pretty-log-tagged';
  * clog.user({ id: 1 });
  * clog.error('Oops');
  */
