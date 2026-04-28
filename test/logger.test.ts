@@ -1,10 +1,9 @@
-/// <reference types="jest" />
-
+import { jest } from "@jest/globals";
 import clog from "../src/logger";
 
 describe("clog logger", () => {
-  let logSpy: jest.SpyInstance;
-  let dirSpy: jest.SpyInstance;
+  let logSpy: ReturnType<typeof jest.spyOn>;
+  let dirSpy: ReturnType<typeof jest.spyOn>;
 
   beforeEach(() => {
     logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
