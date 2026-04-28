@@ -27,6 +27,9 @@
     "tag",
     "structured"
   ],
+  "files": [
+    "dist"
+  ],
   "author": "jayemscript",
   "license": "MIT",
   "devDependencies": {
