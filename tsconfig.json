@@ -9,7 +9,7 @@
     "target": "ES2022",
     "lib": ["ES2022"],
     "moduleResolution": "bundler",
-    "types": [],
+    "types": ["node"],
 
     // Other Outputs
     "sourceMap": true,
