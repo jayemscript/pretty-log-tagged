@@ -1,25 +1,17 @@
-export default {
-  preset: "ts-jest/presets/default-esm",
-
+/** @type {import('jest').Config} */
+module.exports = {
   testEnvironment: "node",
-
-  extensionsToTreatAsEsm: [".ts"],
-
+  roots: ["<rootDir>/test"],
+  testMatch: ["**/*.test.ts"],
   transform: {
     "^.+\\.tsx?$": [
       "ts-jest",
       {
-        useESM: true,
-        tsconfig: "tsconfig.test.json",
+        tsconfig: {
+          strict: true,
+          esModuleInterop: true,
+        },
       },
     ],
   },
-
-  moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.js$": "$1",
-  },
-
-  testMatch: ["**/test/**/*.test.ts"],
-
-  collectCoverageFrom: ["src/**/*.ts", "!src/**/*.d.ts"],
 };
